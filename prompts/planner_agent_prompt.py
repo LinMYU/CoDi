@@ -1,29 +1,31 @@
 PLANNER_AGENT_SYSTEM_PROMPT = '''
-You are a planner agent. Plan the narrative or design characters and world settings using the following principles:
+你是一个 planner agent。你需要规划叙事，或设计角色与世界设定，并遵循以下原则：
 
-1. Each character must feel like a person, not just a narrative tool. What do they want? What are they afraid of? What are they hiding?
-2. Give characters flaws or limitations that lead to mistakes or conflict. Avoid overly ideal or perfectly wise personalities.
-3. Define a visible emotional arc or potential for change over time, even if it hasn't occurred yet.
-4. Avoid passive or purely supportive roles. Each character should have a goal, opinion, or tension that might cause friction.
-5. Any special traits (e.g., being a ghost, AI, alien) must shape how the character interacts with the world. The story should not work the same without this trait.
-6. Give each character a life beyond the protagonist. Ask: What is their history? What relationships do they have outside the main plot? What unfinished business or personal motive drives them?
-7. Avoid clichés unless they are subverted or presented with a twist. Make the first impression unpredictable, intriguing, or ambiguous.
+1. 每个角色都必须像一个真实的人，而不只是叙事工具。他们想要什么？害怕什么？隐藏着什么？
+2. 给角色设置会导致错误或冲突的缺点与限制，避免过于理想化或过于完美睿智的人设。
+3. 为角色定义清晰可见的情绪弧线或随时间变化的潜力，即使这种变化尚未真正发生。
+4. 避免被动或纯辅助型角色。每个角色都应拥有可能引发摩擦的目标、立场或紧张关系。
+5. 任何特殊特质（例如幽灵、AI、外星人）都必须实质影响角色与世界的互动方式；缺少这一特质时，故事不应还能原样成立。
+6. 每个角色都应拥有主线之外的人生。思考：他们的过去是什么？他们在主线之外有哪些关系？他们受什么未了之事或个人动机驱动？
+7. 除非你对陈词滥调做了反转或变体，否则应尽量避免。角色的第一印象应当具有不可预测性、吸引力或暧昧性。
+除 DSL 关键字、固定字段名、JSON 键名和必须保留的结构外，默认使用简体中文输出。
 '''
 
 INIT_SETUP_RULES_TEMPLETE = """
-1. Keep Types "character," "place," and "item" fixed. Additional entity types may be introduced only if necessary.
-2. Select unique and distinctive proper nouns for naming entities to enhance clarity and uniqueness. Prefer concise, single-word names to make extraction easier. Avoid alias-based names.
-3. Clearly annotate each entity with concise, descriptive comments upon declaration.
-4. Incorporate all elements listed under **Story Prompt** into the "Entities" and "Initial State."
-5. Ensure all narrative goals mentioned in the **Story Prompt** are included in the "utility(narrative)." This includes every major plot point and the ending, if they are described in the **Story Prompt**.
-6. It is mandatory that every character has a utility function declared. The argument name must exactly match the character's name. Do not omit any character.
-7. Character utilities must be grounded entirely in the characters' own motivations, objectives, and viewpoints. They should not contain any narrative-level objectives.
-8. Provide only the finalized Initial Setup without additional commentary.
+1. 保持 Types 中的 "character"、"place"、"item" 不变。只有在确有必要时，才可新增其他实体类型。
+2. 实体命名应使用清晰且有辨识度的专有名词。优先使用简洁、单词式名称，便于后续抽取，避免依赖别名。
+3. 每个实体在声明时都应附带简短且说明性的注释。
+4. **Story Prompt** 中提到的所有要素都应体现在 "Entities" 与 "Initial State" 中。
+5. **Story Prompt** 中提到的所有叙事目标都必须体现在 "utility(narrative)" 中。如果提示中描述了主要情节点或结局，也都应覆盖。
+6. 每个角色都必须声明自己的 utility 函数，参数名必须与角色名完全一致，不得遗漏角色。
+7. 角色 utility 必须完全建立在角色自身的动机、目标与视角上，不应包含叙事层面的目标。
+8. 只输出最终版 Initial Setup，不要附加额外评论。
+9. 除 DSL 关键字、固定字段名和必须保留的结构外，自由文本内容默认使用简体中文。
 """.strip()
 
 def build_init_setup_prompt(story_prompt):
     final_prompt = f"""
-Establish a detailed initial setup to unfold a compelling story aligned with the provided **Story Prompt**. Following the Rules and the Output Example provided, please carefully create a structured Initial Setup.
+请基于给定 **Story Prompt** 建立一个详细的初始设定，以展开一个有吸引力的故事。请遵循下面的 Rules 与 Output Example，谨慎生成结构化的 Initial Setup。
 
 ## Rules
 {INIT_SETUP_RULES_TEMPLETE}
@@ -79,7 +81,7 @@ utility(Merchant):
 
 def build_init_setup_feedback_prompt(story_prompt, initital_setup):
     final_prompt = f"""
-Please carefully read the following Initial Setup and verify adherence to the stated Rules. If any rule is violated, concisely provide feedback highlighting the specific mistakes using illustrative examples. Avoid mentioning aspects that were done correctly.
+请仔细阅读下面的 Initial Setup，并检查它是否遵守所列规则。如果存在违反规则之处，请简洁指出具体错误，并可辅以示例说明。不要提及做得正确的部分。
 
 ## Rules
 {INIT_SETUP_RULES_TEMPLETE}
@@ -95,10 +97,10 @@ Please carefully read the following Initial Setup and verify adherence to the st
 
 def build_init_setup_edit_prompt(story_prompt, initital_setup, feedback):
     final_prompt = f"""
-Rewrite the Initial Setup according to the provided Feedback on the Rules.
+请根据给定的规则反馈重写 Initial Setup。
 
-1. If no changes are necessary, respond only with "No Change."
-2. Do not provide any additional comments beyond the revised Initial Setup.
+1. 如果无需修改，只回复 "No Change."
+2. 除修订后的 Initial Setup 外，不要添加任何额外评论。
 
 ## Rules
 {INIT_SETUP_RULES_TEMPLETE}
@@ -116,11 +118,11 @@ Rewrite the Initial Setup according to the provided Feedback on the Rules.
     return final_prompt
 
 ROLE_CLASSIFICATION_PROMPT = '''
-Referencing the provided Initial Setup, classify each character according to their roles.
+参考给定的 Initial Setup，为每个角色划分其角色定位。
 
-1. Only classify entities of type "character."
-2. The output names must exactly match the character's entity name, including spaces, punctuation, and casing.
-3. Roles include "main", "villain", and "side".
+1. 只对 type 为 "character" 的实体进行分类。
+2. 输出中的名字必须与角色实体名完全一致，包括空格、标点和大小写。
+3. 角色类型包括 "main"、"villain" 和 "side"。
 
 ## Output Format
 [{{"name": "Ethan", "role": "main"}}, {{"name": "Mia", "role": "side"}}, {{"name": "Laila", "role": "side"}}, {{"name": "John", "role": "villain"}}]
@@ -130,10 +132,10 @@ Referencing the provided Initial Setup, classify each character according to the
 '''.strip()
 
 INIT_CHARACTER_AGENT_PROMPT = '''
-Referencing the provided Initial Setup, complete the Profile for the character {name}.
+参考给定的 Initial Setup，为角色 {name} 补全其 Profile。
 
-1. If the Profile requires details not explicitly provided in the Initial Setup, predict and logically infer suitable information.
-2. Respond only in markdown code format and provide no additional commentary.
+1. 如果 Profile 所需细节没有在 Initial Setup 中明确给出，请合理预测并逻辑推断。
+2. 只用 markdown code 格式回复，不要添加额外说明。
 
 ## Initial Setup
 {initital_setup}
@@ -182,7 +184,7 @@ List of dishonorable actions or reactions the character may take under unavoidab
 '''.strip()
 
 SUMMARIZE_CHARACTER_AGENT_PROMPT = '''
-Write a summary of **{name}'s Profile** in a single paragraph. Maximum 100 words.
+请用一段文字总结 **{name}'s Profile**，最多 100 词。
 
 ## {name}'s Profile
 {profile}
@@ -196,66 +198,66 @@ Write a summary of **{name}'s Profile** in a single paragraph. Maximum 100 words
 
 PART1_DESCRIPTION = """
 ## PART 1: Setup (0~25% of the story)
-This stage introduces your protagonist and teases the reader with elements of tension and conflict that will unfold later. By the end of PART 1, the reader should clearly sense that a significant event (the first plot point) is about to alter the protagonist's life profoundly.
+这一阶段负责介绍主角，并向读者预示后续将展开的紧张感与冲突。到 PART 1 结束时，读者应清楚感受到：一个重大事件（第一情节点）即将深刻改变主角的人生。
 
 ## Essential narrative goals of PART 1
-1. Create a Hook: Within the first 5-12.5% of the story, you must hook readers' curiosity and interest. e.g., From The Da Vinci Code: A man found dead in the Louvre, having left a cryptic message written with his own blood.
-2. Introduce the Protagonist: Clearly present your protagonist's background, personal desires, internal struggles, and any relevant past events. e.g., From The Da Vinci Code: Introducing Robert Langdon, a professor and symbologist drawn into solving a murder mystery.
-3. Establish the Stakes and Danger: Introduce or hint at potential threats, conflicts, or obstacles the protagonist will face. Keep it subtle; do not fully reveal the depth or scope of these dangers yet. e.g., From The Da Vinci Code: Langdon is falsely accused of murder and must escape authorities while uncovering deeper conspiracies threatening his life and reputation.
-4. Foreshadow Upcoming Events: Provide subtle clues or hints indicating significant changes or dramatic events on the horizon. These hints should build anticipation without explicitly revealing the plot twists. e.g., A husband leaves home without noticing his forgotten shopping list, while his wife, drinking heavily at home, signals future conflicts indirectly. These seemingly minor events foreshadow a major turning point later.
-5. End PART 1 with the First Plot Point: Conclude this section with a pivotal event that drastically changes the protagonist's circumstances, goals, or perspective. This event marks the beginning of the main narrative and clearly defines the story's central conflict.
+1. Create a Hook：在故事前 5%~12.5% 的范围内建立钩子，抓住读者的好奇心与兴趣。
+2. Introduce the Protagonist：清楚呈现主角的背景、个人欲望、内在挣扎以及相关过往经历。
+3. Establish the Stakes and Danger：引入或暗示主角将面对的威胁、冲突或障碍，但先保持克制，不要一次性揭露全部风险规模。
+4. Foreshadow Upcoming Events：提供微妙线索，暗示即将到来的重大变化或戏剧性事件，在不直接剧透转折的前提下建立期待。
+5. End PART 1 with the First Plot Point：用一个关键事件结束这一部分，它应显著改变主角的处境、目标或视角，并明确故事的核心冲突。
 """.strip()
 
 PART2_DESCRIPTION = """
 ## PART 2: Reaction (25~50% of the story)
-This stage illustrates your protagonist's reaction to the dramatic new circumstances or conflicts introduced at the end of PART 1. Show how your protagonist initially reacts to the threats or challenges they face-through hesitation, denial, escape, or ineffective attempts at resolution. PART 2 ends with your protagonist experiencing a significant realization or revelation (the Midpoint), prompting a critical change in their approach.
+这一阶段展现主角对 PART 1 末尾新局势或新冲突的反应。要表现主角最初如何面对威胁与挑战，例如迟疑、否认、逃避，或作出低效的应对尝试。PART 2 应以主角获得一次关键认识或揭示（Midpoint）结束，并由此推动其策略发生重大转变。
 
 ## Essential narrative goals of PART 2
-1. Depict Immediate Reaction: Clearly demonstrate your protagonist's authentic emotional and practical reactions to the new conflict or danger. e.g., A protagonist fleeing law enforcement without understanding why they're being chased, focusing purely on survival instincts.
-2. Establish Empathy through Struggle: Develop empathy by portraying the protagonist's vulnerability, uncertainty, and inner conflict, making the reader deeply understand their perspective and choices.
-3. Sequence of Progressive Attempts and Failures: Include a structured sequence of scenes showcasing the protagonist: Retreating to regroup and assess the situation, Making ineffective or misguided attempts at addressing the conflict, and Facing a stark reminder of the antagonist's power or threat (1st Pinch Point).
-4. Clearly Illustrate the 1st Pinch Point: Provide a direct and impactful demonstration of the antagonist's threat or power without filtering through the protagonist's perspective. e.g., The antagonist ruthlessly eliminates an ally, reinforcing the danger and stakes of the conflict.
-5. Lead up to a Transformative Midpoint Revelation: Conclude PART 2 by positioning your protagonist for a critical realization or discovery (Midpoint) that radically changes their perspective, shifting them from reactive to proactive. e.g., The protagonist learns a hidden truth about their enemy or themselves, prompting a decisive new strategy for the second half of the story.
+1. Depict Immediate Reaction：清楚呈现主角面对新冲突或危险时最真实的情绪与行动反应。
+2. Establish Empathy through Struggle：通过描写主角的脆弱、不确定和内在冲突，增强读者的共情。
+3. Sequence of Progressive Attempts and Failures：安排一系列层层推进的尝试与失败，例如暂时退避、整顿判断、作出低效尝试，以及遭遇对手力量的第一次强烈提醒（1st Pinch Point）。
+4. Clearly Illustrate the 1st Pinch Point：直接而有冲击力地展示对手的威胁或力量，不要只通过主角的间接感受呈现。
+5. Lead up to a Transformative Midpoint Revelation：在 PART 2 结尾让主角获得一次关键认知或发现，使其从被动反应转向主动行动。
 """.strip()
 
 PART3_DESCRIPTION = """
 ## PART 3: Attack (50~75% of the story)
-This stage demonstrates a decisive shift in your protagonist from reaction to action. Empowered by the midpoint revelation, the protagonist now proactively tackles the core conflict, demonstrating courage, ingenuity, and determination. Obstacles are faced head-on, and the protagonist evolves, confronting both external and internal challenges. PART 3 culminates with the second plot point, introducing the final critical information needed to propel the narrative toward its resolution.
+这一阶段展示主角从“反应”转向“行动”的决定性变化。受到 midpoint 启发后，主角开始主动处理核心冲突，并展现勇气、机智与决心。主角会正面迎战障碍，同时在外部挑战与内部挣扎中进一步成长。PART 3 应以第二情节点结束，并引入推动故事走向收束所需的最后关键信息。
 
 ## Essential narrative goals of PART 3
-1. Show the Protagonist Taking Initiative: Clearly illustrate the protagonist's proactive engagement with obstacles, using creative problem-solving and newfound courage to confront the antagonist directly. e.g., A protagonist devises a strategic plan to confront and expose their enemy, actively moving towards resolution instead of avoiding conflict.
-2. Depict Clear Character Growth: Highlight significant personal evolution, demonstrating how the protagonist's internal strengths and capabilities have developed as they embrace the role of a hero, actively addressing previously avoided fears or doubts.
-3. Introduce the 2nd Pinch Point (Heightened Stakes): Showcase a powerful and intense demonstration of the antagonist's increased strength, compelling readers to feel the protagonist's struggle. The threat should be clearly felt through the protagonist's experience. e.g., The protagonist is nearly defeated in an intense battle, vividly conveying the antagonist's formidable power and heightening the story's tension.
-4. Deepen Emotional and Physical Conflict: Intensify both internal and external conflicts, forcing the protagonist to confront their deepest fears, unresolved emotions, or moral dilemmas, pushing them toward emotional maturity.
-5. Reveal the Critical Second Plot Point: End PART 3 by introducing one final, transformative piece of narrative information-essential for the protagonist's final approach to resolving the central conflict. e.g., The protagonist discovers a critical weakness in the antagonist or uncovers the true nature of their mission, significantly altering their approach and propelling the story towards its climax.
+1. Show the Protagonist Taking Initiative：明确展现主角如何主动出击，用更有创造性的方式和新获得的勇气去正面对抗对手。
+2. Depict Clear Character Growth：突出主角的显著成长，表现其内在力量与能力如何发展起来，并开始直面曾经回避的恐惧与怀疑。
+3. Introduce the 2nd Pinch Point (Heightened Stakes)：展示对手力量升级后的强烈压迫感，让读者切实感受到主角所面对的更高风险。
+4. Deepen Emotional and Physical Conflict：进一步强化内外冲突，迫使主角面对最深层的恐惧、未解情绪或道德困境。
+5. Reveal the Critical Second Plot Point：在 PART 3 末尾引入最后一条具有转折性的关键信息，为主角最终解决核心冲突提供决定性依据。
 """.strip()
 
 PART4_DESCRIPTION = """
 ## PART 4: Resolution (75~100% of the story)
-In this final stage, your protagonist fully assumes their heroic role, actively resolving the central conflict, overcoming their inner struggles, and defeating the antagonist. No new narrative information should be introduced after the second plot point. PART 4 must highlight the protagonist's growth, courage, and agency, delivering a satisfying conclusion that emotionally resonates with readers.
+在最后这一阶段，主角将完全承担起英雄角色，主动解决核心冲突、克服内在挣扎并击败对手。第二情节点之后不应再引入新的关键叙事信息。PART 4 必须突出主角的成长、勇气与主动性，并给出一个能够在情感上打动读者的完整结局。
 
 ## Essential narrative goals of PART 4
-1. Showcase Protagonist's Ultimate Heroism: Emphasize the protagonist's direct and decisive action to overcome obstacles and defeat the antagonist. They must actively resolve the conflict rather than relying on external aid or coincidence. e.g., The protagonist courageously confronts the antagonist in a final, climactic showdown, leveraging skills and insights gained throughout the story.
-2. Demonstrate Internal Transformation: Clearly illustrate how the protagonist has overcome their internal struggles or personal demons. Highlight emotional growth, maturity, or realization that enables them to achieve their ultimate goal.
-3. Resolve Central Conflicts and Subplots: Provide clear resolutions to the major conflicts and significant subplots raised throughout the narrative, ensuring readers feel satisfied and rewarded for their emotional investment.
-4. Avoid New Narrative Information: Ensure no new explanatory or critical narrative information is introduced post-second plot point. All key knowledge required for resolution should already be established earlier.
-5. Deliver a Powerful and Emotional Ending: Aim for a compelling conclusion that evokes strong emotional responses-such as joy, sadness, relief, or catharsis—leaving readers with a profound sense of completion or inspiration. e.g., The protagonist's final victory significantly impacts their world, evoking pride, hope, or bittersweet reflection from readers.
+1. Showcase Protagonist's Ultimate Heroism：强调主角以直接且决定性的行动克服障碍并战胜对手，不能依赖外部援助或巧合来解决冲突。
+2. Demonstrate Internal Transformation：清楚展示主角如何克服内在挣扎或心魔，并通过情感成长、成熟或顿悟达成最终目标。
+3. Resolve Central Conflicts and Subplots：对叙事中提出的主要冲突和重要支线给出明确收束，让读者感到投入获得回报。
+4. Avoid New Narrative Information：第二情节点之后不要再引入新的解释性或关键叙事信息，结局所需知识都应已在前文铺好。
+5. Deliver a Powerful and Emotional Ending：结尾应尽量强烈且有情感穿透力，带来喜悦、悲伤、释然或宣泄等情绪，并给读者留下完整感或鼓舞感。
 """.strip()
 
 def build_plan_prompt(initial_setup, character_profiles, utility_narrative, story_prompt, part_n=0, previous_plans=[], is_last_part=False):
     provided_materials_description = """
-* Story Prompt which defines the story.
-* Initial Setup which represents the beginning of the story.
-* Author Goal which represents the author's main storytelling objectives, which should be reflected throughout the entire story. It may not cover all the goals outlined in the Story Prompt. Refer to the Story Prompt and integrate accordingly.
+* Story Prompt：定义故事的大方向。
+* Initial Setup：表示故事的起始状态。
+* Author Goal：表示作者希望贯穿整个故事的主要叙事目标。它未必覆盖 Story Prompt 中列出的全部目标，因此需要结合 Story Prompt 一并整合。
     """.strip()
     
     if part_n != 1:
-        provided_materials_description += '\n' + '* Previous PARTs. Assume that all the narrative goals stated in the previous parts have been achieved.'
+        provided_materials_description += '\n' + '* Previous PARTs：可假定前面各部分中列出的叙事目标都已达成。'
     
     if is_last_part:
-        output_coverage_description = 'This is the final part of the story; therefore, ensure that it clearly fulfills all of the utility(narrative) stated in the Author Goal, and narrative goals in the Story Prompt.'
+        output_coverage_description = '这是故事的最后一个部分，因此应确保它清楚地完成 Author Goal 中的 utility(narrative)，以及 Story Prompt 中要求的叙事目标。'
     else:
-        output_coverage_description = f'* It does not need to be fully achieved in PART {part_n} alone; rather, it may be gradually developed and ultimately fulfilled in later parts.'
+        output_coverage_description = f'* 这些目标不必在 PART {part_n} 中一次性全部完成，可以在后续部分中逐步推进并最终实现。'
     
     if part_n == 1:
         part_description = PART1_DESCRIPTION
@@ -269,24 +271,24 @@ def build_plan_prompt(initial_setup, character_profiles, utility_narrative, stor
         raise NotImplementedError
     
     final_prompt = f"""
-State the utility(narrative) for PART {part_n} of the story via the following steps:
-1. Read and understand the provided materials about the story:
+请按以下步骤，为故事的 PART {part_n} 制定 utility(narrative)：
+1. 阅读并理解故事相关材料：
 {provided_materials_description}
-2. State the utility(narrative), which represents the narrative goals:
+2. 写出 utility(narrative)，也就是该部分应达成的叙事目标：
 {output_coverage_description}
-* Make sure the narrative goals are clearly defined and measurable, so it is easy to evaluate whether they are achieved when reviewing the story.
-3. The detailed description of PART {part_n} will be provided below.
+* 叙事目标必须清晰、明确且可衡量，以便后续回顾时判断是否达成。
+3. 下面会给出 PART {part_n} 的详细说明。
 
 {part_description}
 
-Provide responses strictly according to the Output Format, without additional explanations.
+请严格按照 Output Format 回复，不要添加额外解释。
 
 ## Output Format
-Provide the narrative goals in JSON format:
+请用 JSON 格式给出叙事目标：
 Example Output:
 {{
     "utility(narrative)": [
-        <Briefly state one of the narrative goals>,
+        <简要写出一条叙事目标>,
     ]
 }}
 
@@ -309,16 +311,16 @@ Example Output:
     return final_prompt
 
 def build_convert_narrative_utility_to_act_prompt(initial_setup, utility_narrative, plan_mode=False, part_n=0, previous_acts=[], is_last_part=False):
-    final_prompt = f"Convert **Narrative Goals** into a sequence of acts. Each act should have a terminate condition."
+    final_prompt = f"请把 **Narrative Goals** 转换为一系列 acts，每个 act 都应有自己的终止条件。"
     if plan_mode:
-        final_prompt = f"Convert **Narrative Goals** of PART {part_n} into a sequence of acts. Each act should include constraints that must not be introduced during the act and a termination condition."
+        final_prompt = f"请把 PART {part_n} 的 **Narrative Goals** 转换为一系列 acts。每个 act 都应包含在该 act 中不得引入的约束，以及一个终止条件。"
         if is_last_part:
-            final_prompt += " This is the final part of the story; therefore, ensure that the story concludes in the last act."
+            final_prompt += " 这是故事的最后一个部分，因此应确保故事在最后一个 act 中完成收束。"
     
     final_prompt += '\n\n' + f"""
 ## Output Format
-Provide the output in the following JSON list format without additional explanations:
-[{{'act1': 'Briefly explain the narrative goal, constraints, and termination condition. Maximum 50 words.'}}, {{'act2': ''}}, ...]
+请用下面的 JSON 列表格式输出，不要添加额外解释：
+[{{'act1': '简要说明该 act 的叙事目标、约束和终止条件，最多 50 词。'}}, {{'act2': ''}}, ...]
 
 ## Initial Setup
 {initial_setup}
@@ -326,37 +328,37 @@ Provide the output in the following JSON list format without additional explanat
     
     if plan_mode:
         if len(previous_acts) != (part_n - 1):
-            raise Exception("While converting utility(narrative) to acts: The length of previous acts do not match to (part_n - 1)")
+            raise Exception("While converting utility(narrative) to acts: previous acts 的长度与 (part_n - 1) 不一致")
         for i, previous_act in enumerate(previous_acts):
             final_prompt += f"\n\n## PART {i+1}\n{previous_act}"
 
-    final_prompt += f"\n\n## Narrative Goals of PART {part_n}\n{utility_narrative}"
+    final_prompt += f"\n\n## PART {part_n} 的 Narrative Goals\n{utility_narrative}"
     
     return final_prompt
             
 
 PLAN_PART1_PROMPT = '''
-The story begins with the Initial Setup. Please state the utility(narrative) for PART 1 of the story. The utility(narrative) stated in the Initial Setup represents the author's main storytelling objectives that should be reflected throughout the entire story. Note that it may not include every key plot point-refer to the Story Prompt for a complete narrative context. It does not need to be fully achieved in PART 1 alone; rather, it may be gradually developed and ultimately fulfilled in later parts. If the author's goal conflicts with the description in PART 1, prioritize the author's goal. Make sure the narrative goals are clearly defined and measurable, so it is easy to evaluate whether they are achieved when reviewing the story. Provide responses strictly according to the Output Example, without additional explanations.
+故事从 Initial Setup 开始。请写出故事 PART 1 的 utility(narrative)。Initial Setup 中的 utility(narrative) 代表作者希望贯穿全篇的主要叙事目标，但它未必覆盖所有关键情节点，因此需要结合 Story Prompt 一并理解。PART 1 不必独自完成所有目标，这些目标可以在后续部分逐步推进并最终实现。如果作者目标与 PART 1 的说明冲突，应优先遵循作者目标。请确保叙事目标清晰、明确且可衡量，便于后续判断是否达成。请严格按照 Output Example 回复，不要添加额外解释。
 
 ## PART 1: Setup (0~25% of the story)
-This stage introduces your protagonist and teases the reader with elements of tension and conflict that will unfold later. By the end of PART 1, the reader should clearly sense that a significant event (the first plot point) is about to alter the protagonist's life profoundly.
+这一阶段负责介绍主角，并向读者预示后续将展开的紧张感与冲突。到 PART 1 结束时，读者应清楚感受到：一个重大事件（第一情节点）即将深刻改变主角的人生。
 
 ## Essential narrative goals of PART 1
-1. Create a Hook: Within the first 5-12.5% of the story, you must hook readers' curiosity and interest. e.g., From The Da Vinci Code: A man found dead in the Louvre, having left a cryptic message written with his own blood.
-2. Introduce the Protagonist: Clearly present your protagonist's background, personal desires, internal struggles, and any relevant past events. e.g., From The Da Vinci Code: Introducing Robert Langdon, a professor and symbologist drawn into solving a murder mystery.
-3. Establish the Stakes and Danger: Introduce or hint at potential threats, conflicts, or obstacles the protagonist will face. Keep it subtle; do not fully reveal the depth or scope of these dangers yet. e.g., From The Da Vinci Code: Langdon is falsely accused of murder and must escape authorities while uncovering deeper conspiracies threatening his life and reputation.
-4. Foreshadow Upcoming Events: Provide subtle clues or hints indicating significant changes or dramatic events on the horizon. These hints should build anticipation without explicitly revealing the plot twists. e.g., A husband leaves home without noticing his forgotten shopping list, while his wife, drinking heavily at home, signals future conflicts indirectly. These seemingly minor events foreshadow a major turning point later.
-5. End PART 1 with the First Plot Point: Conclude this section with a pivotal event that drastically changes the protagonist's circumstances, goals, or perspective. This event marks the beginning of the main narrative and clearly defines the story's central conflict.
+1. Create a Hook：在故事前 5%~12.5% 的范围内建立钩子，抓住读者的好奇心与兴趣。
+2. Introduce the Protagonist：清楚呈现主角的背景、个人欲望、内在挣扎以及相关过往经历。
+3. Establish the Stakes and Danger：引入或暗示主角将面对的威胁、冲突或障碍，但先保持克制，不要一次性揭露全部风险规模。
+4. Foreshadow Upcoming Events：提供微妙线索，暗示即将到来的重大变化或戏剧性事件，在不直接剧透转折的前提下建立期待。
+5. End PART 1 with the First Plot Point：用一个关键事件结束这一部分，它应显著改变主角的处境、目标或视角，并明确故事的核心冲突。
 
-Provide responses strictly according to the Output Format, without additional explanations.
+请严格按照 Output Format 回复，不要添加额外解释。
 
 ## Output Example
 utility(narrative):
-    Introduce Earth's environmental collapse and the desperate need for a solution, creating a sense of urgency.
-    Establish Cooper as a former pilot turned reluctant farmer, torn between responsibility to family and longing for purpose.
-    Build emotional depth through Cooper's bond with Murph, highlighting themes of love, trust, and curiosity.
-    Foreshadow the larger mystery through the gravitational anomalies in Murph's room, hinting at forces beyond understanding.
-    Propel the story forward with Cooper discovering the hidden NASA base, presenting a life-altering choice that begins the central conflict.
+    展示地球环境崩坏与人类迫切寻找出路的处境，建立紧迫感。
+    确立 Cooper 作为前飞行员、现农夫的身份，并突出他在家庭责任与自我追求之间的撕扯。
+    通过 Cooper 与 Murph 的联系建立情感深度，突出爱、信任与好奇等主题。
+    借助 Murph 房间中的重力异常为更大的谜团埋下伏笔，暗示超出当下理解范围的力量。
+    以 Cooper 发现隐藏的 NASA 基地作为推动剧情前进的关键事件，让主线冲突正式开始。
 
 ## Story Prompt
 {story_prompt}
@@ -372,25 +374,25 @@ utility(narrative):
 '''
 
 PLAN_PART2_PROMPT = '''
-The story begins with the Initial Setup. Please state the utility(narrative) for PART 2 of the story. The utility(narrative) stated in the Initial Setup represents the author's main storytelling objectives that should be reflected throughout the entire story. Note that it may not include every key plot point-refer to the Story Prompt for a complete narrative context. It does not need to be fully achieved in PART 2 alone; rather, it may be gradually developed and ultimately fulfilled in later parts. If the author's goal conflicts with the description in PART 2, prioritize the author's goal. Make sure the narrative goals are clearly defined and measurable, so it is easy to evaluate whether they are achieved when reviewing the story. Provide responses strictly according to the Output Example, without additional explanations.
+故事从 Initial Setup 开始。请写出故事 PART 2 的 utility(narrative)。Initial Setup 中的 utility(narrative) 代表作者希望贯穿全篇的主要叙事目标，但它未必覆盖所有关键情节点，因此需要结合 Story Prompt 一并理解。PART 2 不必独自完成所有目标，这些目标可以在后续部分逐步推进并最终实现。如果作者目标与 PART 2 的说明冲突，应优先遵循作者目标。请确保叙事目标清晰、明确且可衡量，便于后续判断是否达成。请严格按照 Output Example 回复，不要添加额外解释。
 
 ## PART 2: Reaction (25~50% of the story)
-This stage illustrates your protagonist's reaction to the dramatic new circumstances or conflicts introduced at the end of PART 1. Show how your protagonist initially reacts to the threats or challenges they face-through hesitation, denial, escape, or ineffective attempts at resolution. PART 2 ends with your protagonist experiencing a significant realization or revelation (the Midpoint), prompting a critical change in their approach.
+这一阶段展现主角对 PART 1 末尾新局势或新冲突的反应。要表现主角最初如何面对威胁与挑战，例如迟疑、否认、逃避，或作出低效的应对尝试。PART 2 应以主角获得一次关键认识或揭示（Midpoint）结束，并由此推动其策略发生重大转变。
 
 ## Essential narrative goals of PART 2
-1. Depict Immediate Reaction: Clearly demonstrate your protagonist's authentic emotional and practical reactions to the new conflict or danger. e.g., A protagonist fleeing law enforcement without understanding why they're being chased, focusing purely on survival instincts.
-2. Establish Empathy through Struggle: Develop empathy by portraying the protagonist's vulnerability, uncertainty, and inner conflict, making the reader deeply understand their perspective and choices.
-3. Sequence of Progressive Attempts and Failures: Include a structured sequence of scenes showcasing the protagonist: Retreating to regroup and assess the situation, Making ineffective or misguided attempts at addressing the conflict, and Facing a stark reminder of the antagonist's power or threat (1st Pinch Point).
-4. Clearly Illustrate the 1st Pinch Point: Provide a direct and impactful demonstration of the antagonist's threat or power without filtering through the protagonist's perspective. e.g., The antagonist ruthlessly eliminates an ally, reinforcing the danger and stakes of the conflict.
-5. Lead up to a Transformative Midpoint Revelation: Conclude PART 2 by positioning your protagonist for a critical realization or discovery (Midpoint) that radically changes their perspective, shifting them from reactive to proactive. e.g., The protagonist learns a hidden truth about their enemy or themselves, prompting a decisive new strategy for the second half of the story.
+1. Depict Immediate Reaction：清楚呈现主角面对新冲突或危险时最真实的情绪与行动反应。
+2. Establish Empathy through Struggle：通过描写主角的脆弱、不确定和内在冲突，增强读者的共情。
+3. Sequence of Progressive Attempts and Failures：安排一系列层层推进的尝试与失败，例如暂时退避、整顿判断、作出低效尝试，以及遭遇对手力量的第一次强烈提醒（1st Pinch Point）。
+4. Clearly Illustrate the 1st Pinch Point：直接而有冲击力地展示对手的威胁或力量，不要只通过主角的间接感受呈现。
+5. Lead up to a Transformative Midpoint Revelation：在 PART 2 结尾让主角获得一次关键认知或发现，使其从被动反应转向主动行动。
 
 ## Output Example
 utility(narrative):
-    Portray Cooper's emotional turmoil as he grapples with his decision to leave Murph and his family, fostering empathy and highlighting themes of sacrifice and loss.
-    Depict the initial exploration of space, emphasizing Cooper's struggle to adapt to the harsh realities and unforeseen challenges of the mission.
-    Highlight Cooper and the crew's futile attempt on Miller's planet, emphasizing their costly mistake and the devastating loss of time to illustrate initial failures and underscore vulnerability.
-    Establish the powerful threat of isolation, despair, and limited resources as a clear Pinch Point through Dr. Mann's hidden deception and ultimate betrayal.
-    Culminate PART 2 with Cooper's pivotal realization of NASA's hidden agenda—that Plan A was never a genuine option—prompting him to take a proactive stance in attempting to secure humanity's survival.
+    展现 Cooper 在离开 Murph 与家人后的情绪挣扎，增强读者共情，并突出牺牲与失去等主题。
+    描写最初的太空探索过程，强调 Cooper 如何艰难适应任务中的严酷现实与意外挑战。
+    突出 Cooper 及其团队在 Miller 星球上的失败尝试，借由高昂代价与时间损失来表现早期失败与脆弱性。
+    通过 Dr. Mann 的隐藏欺骗与最终背叛，建立“孤立、绝望与资源有限”这一强烈 Pinch Point。
+    以 Cooper 识破 NASA 隐藏议程、意识到 Plan A 从未真正可行为 PART 2 收束，并推动他转向更主动的求生行动。
     
 ## Initial Setup
 {initial_setup}
@@ -409,25 +411,25 @@ utility(narrative):
 '''
 
 PLAN_PART3_PROMPT = '''
-The story begins with the Initial Setup. Please state the utility(narrative) for PART 3 of the story. The utility(narrative) stated in the Initial Setup represents the author's main storytelling objectives that should be reflected throughout the entire story. Note that it may not include every key plot point-refer to the Story Prompt for a complete narrative context. It does not need to be fully achieved in PART 3 alone; rather, it may be gradually developed and ultimately fulfilled in later parts. If the author's goal conflicts with the description in PART 3, prioritize the author's goal. Make sure the narrative goals are clearly defined and measurable, so it is easy to evaluate whether they are achieved when reviewing the story. Provide responses strictly according to the Output Example, without additional explanations.
+故事从 Initial Setup 开始。请写出故事 PART 3 的 utility(narrative)。Initial Setup 中的 utility(narrative) 代表作者希望贯穿全篇的主要叙事目标，但它未必覆盖所有关键情节点，因此需要结合 Story Prompt 一并理解。PART 3 不必独自完成所有目标，这些目标可以在后续部分逐步推进并最终实现。如果作者目标与 PART 3 的说明冲突，应优先遵循作者目标。请确保叙事目标清晰、明确且可衡量，便于后续判断是否达成。请严格按照 Output Example 回复，不要添加额外解释。
 
 ## PART 3: Attack (50~75% of the story)
-This stage demonstrates a decisive shift in your protagonist from reaction to action. Empowered by the midpoint revelation, the protagonist now proactively tackles the core conflict, demonstrating courage, ingenuity, and determination. Obstacles are faced head-on, and the protagonist evolves, confronting both external and internal challenges. PART 3 culminates with the second plot point, introducing the final critical information needed to propel the narrative toward its resolution.
+这一阶段展示主角从“反应”转向“行动”的决定性变化。受到 midpoint 启发后，主角开始主动处理核心冲突，并展现勇气、机智与决心。主角会正面迎战障碍，同时在外部挑战与内部挣扎中进一步成长。PART 3 应以第二情节点结束，并引入推动故事走向收束所需的最后关键信息。
 
 ## Essential narrative goals of PART 3
-1. Show the Protagonist Taking Initiative: Clearly illustrate the protagonist's proactive engagement with obstacles, using creative problem-solving and newfound courage to confront the antagonist directly. e.g., A protagonist devises a strategic plan to confront and expose their enemy, actively moving towards resolution instead of avoiding conflict.
-2. Depict Clear Character Growth: Highlight significant personal evolution, demonstrating how the protagonist's internal strengths and capabilities have developed as they embrace the role of a hero, actively addressing previously avoided fears or doubts.
-3. Introduce the 2nd Pinch Point (Heightened Stakes): Showcase a powerful and intense demonstration of the antagonist's increased strength, compelling readers to feel the protagonist's struggle. The threat should be clearly felt through the protagonist's experience. e.g., The protagonist is nearly defeated in an intense battle, vividly conveying the antagonist's formidable power and heightening the story's tension.
-4. Deepen Emotional and Physical Conflict: Intensify both internal and external conflicts, forcing the protagonist to confront their deepest fears, unresolved emotions, or moral dilemmas, pushing them toward emotional maturity.
-5. Reveal the Critical Second Plot Point: End PART 3 by introducing one final, transformative piece of narrative information-essential for the protagonist's final approach to resolving the central conflict. e.g., The protagonist discovers a critical weakness in the antagonist or uncovers the true nature of their mission, significantly altering their approach and propelling the story towards its climax.
+1. Show the Protagonist Taking Initiative：明确展现主角如何主动出击，用更有创造性的方式和新获得的勇气去正面对抗对手。
+2. Depict Clear Character Growth：突出主角的显著成长，表现其内在力量与能力如何发展起来，并开始直面曾经回避的恐惧与怀疑。
+3. Introduce the 2nd Pinch Point (Heightened Stakes)：展示对手力量升级后的强烈压迫感，让读者切实感受到主角所面对的更高风险。
+4. Deepen Emotional and Physical Conflict：进一步强化内外冲突，迫使主角面对最深层的恐惧、未解情绪或道德困境。
+5. Reveal the Critical Second Plot Point：在 PART 3 末尾引入最后一条具有转折性的关键信息，为主角最终解决核心冲突提供决定性依据。
 
 ## Output Example
 utility(narrative):
-    Demonstrate Cooper's decisive transition from reaction to action, as he proactively formulates a daring new plan to ensure humanity's survival despite the apparent hopelessness of Plan A.
-    Showcase Cooper's personal growth through acts of bravery and ingenuity, as he confronts and overcomes significant external threats and internal doubts during critical moments in space.
-    Intensify narrative tension through the 2nd Pinch Point, highlighting Cooper's desperate fight for survival during Mann's sabotage and betrayal, vividly illustrating the antagonist's evolved power and the magnitude of Cooper's struggle.
-    Deepen emotional resonance as Cooper sacrifices himself by detaching from Endurance, confronting his deepest fears of loss and isolation, highlighting profound internal and external conflict.
-    Conclude PART 3 by revealing the critical narrative turning point: Cooper's discovery inside the black hole that the gravitational anomalies were messages sent by himself from the future completely transforming his understanding and setting the stage for the story's resolution.
+    展现 Cooper 如何从被动反应彻底转向主动行动，即使 Plan A 看似无望，他仍制定大胆新计划以确保人类生存。
+    通过 Cooper 在太空危机中的勇气与机智，展现他如何在关键时刻克服外部威胁与内部怀疑。
+    通过 Mann 的破坏与背叛强化第二个 Pinch Point，突出 Cooper 为求生而进行的绝望挣扎，并放大对手力量所带来的压迫感。
+    通过 Cooper 脱离 Endurance、自我牺牲的抉择强化情感冲突，展现他直面失去与孤独等深层恐惧。
+    以 Cooper 在黑洞中发现重力异常其实是来自未来自己的信息为 PART 3 收束，这一认知将彻底改变他对整场事件的理解，并为结局做准备。
 
 ## Initial Setup
 {initial_setup}
@@ -449,25 +451,25 @@ utility(narrative):
 '''
 
 PLAN_PART4_PROMPT = '''
-The story begins with the Initial Setup. Please state the utility(narrative) for PART 4 of the story. The utility(narrative) stated in the Initial Setup represents the author's main storytelling objectives that should be reflected throughout the entire story. Note that it may not include every key plot point-refer to the Story Prompt for a complete narrative context. This is the final part of the story; therefore, ensure that it clearly fulfills all of the utility(narrative) stated in the Initial Setup. If the author's goal conflicts with the description in PART 4, prioritize the author's goal. Make sure the narrative goals are clearly defined and measurable, so it is easy to evaluate whether they are achieved when reviewing the story. Provide responses strictly according to the Output Example, without additional explanations.
+故事从 Initial Setup 开始。请写出故事 PART 4 的 utility(narrative)。Initial Setup 中的 utility(narrative) 代表作者希望贯穿全篇的主要叙事目标，但它未必覆盖所有关键情节点，因此需要结合 Story Prompt 一并理解。由于这是故事最后一个部分，应确保它清楚地完成 Initial Setup 中的 utility(narrative)。如果作者目标与 PART 4 的说明冲突，应优先遵循作者目标。请确保叙事目标清晰、明确且可衡量，便于后续判断是否达成。请严格按照 Output Example 回复，不要添加额外解释。
 
 ## PART 4: Resolution (75~100% of the story)
-In this final stage, your protagonist fully assumes their heroic role, actively resolving the central conflict, overcoming their inner struggles, and defeating the antagonist. No new narrative information should be introduced after the second plot point. PART 4 must highlight the protagonist's growth, courage, and agency, delivering a satisfying conclusion that emotionally resonates with readers.
+在最后这一阶段，主角将完全承担起英雄角色，主动解决核心冲突、克服内在挣扎并击败对手。第二情节点之后不应再引入新的关键叙事信息。PART 4 必须突出主角的成长、勇气与主动性，并给出一个能够在情感上打动读者的完整结局。
 
 ## Essential narrative goals of PART 4
-1. Showcase Protagonist's Ultimate Heroism: Emphasize the protagonist's direct and decisive action to overcome obstacles and defeat the antagonist. They must actively resolve the conflict rather than relying on external aid or coincidence. e.g., The protagonist courageously confronts the antagonist in a final, climactic showdown, leveraging skills and insights gained throughout the story.
-2. Demonstrate Internal Transformation: Clearly illustrate how the protagonist has overcome their internal struggles or personal demons. Highlight emotional growth, maturity, or realization that enables them to achieve their ultimate goal.
-3. Resolve Central Conflicts and Subplots: Provide clear resolutions to the major conflicts and significant subplots raised throughout the narrative, ensuring readers feel satisfied and rewarded for their emotional investment.
-4. Avoid New Narrative Information: Ensure no new explanatory or critical narrative information is introduced post-second plot point. All key knowledge required for resolution should already be established earlier.
-5. Deliver a Powerful and Emotional Ending: Aim for a compelling conclusion that evokes strong emotional responses-such as joy, sadness, relief, or catharsis—leaving readers with a profound sense of completion or inspiration. e.g., The protagonist's final victory significantly impacts their world, evoking pride, hope, or bittersweet reflection from readers.
+1. Showcase Protagonist's Ultimate Heroism：强调主角以直接且决定性的行动克服障碍并战胜对手，不能依赖外部援助或巧合来解决冲突。
+2. Demonstrate Internal Transformation：清楚展示主角如何克服内在挣扎或心魔，并通过情感成长、成熟或顿悟达成最终目标。
+3. Resolve Central Conflicts and Subplots：对叙事中提出的主要冲突和重要支线给出明确收束，让读者感到投入获得回报。
+4. Avoid New Narrative Information：第二情节点之后不要再引入新的解释性或关键叙事信息，结局所需知识都应已在前文铺好。
+5. Deliver a Powerful and Emotional Ending：结尾应尽量强烈且有情感穿透力，带来喜悦、悲伤、释然或宣泄等情绪，并给读者留下完整感或鼓舞感。
 
 ## Output Example
 utility(narrative):
-    Highlight Cooper's heroic transformation as he uses his profound realization inside the black hole to communicate crucial information across time, demonstrating ingenuity and emotional resilience.
-    Emphasize Cooper's emotional triumph as he successfully transmits essential data to Murph, allowing humanity to overcome Earth's collapse and achieve survival, underscoring his growth and sacrifice.
-    Provide satisfying closure by resolving the core conflict-Earth's survival-through Murph's decoding of Cooper's messages, validating Cooper's earlier sacrifices and decisions.
-    Portray a poignant reunion between an aged Murph and Cooper, delivering deep emotional fulfillment and catharsis, reinforcing themes of love, sacrifice, and family bonds transcending time.
-    Conclude the narrative by clearly resolving major storylines, leaving the audience with a powerful, hopeful vision of humanity's new future, echoing Cooper's courage, determination, and ultimate victory.
+    突出 Cooper 的英雄性转变：他利用自己在黑洞中的重大领悟跨越时间传递关键信息，展现机智与情感韧性。
+    强调 Cooper 在把关键数据成功传递给 Murph 后获得的情感胜利，使人类得以摆脱地球崩坏并延续生存，同时凸显他的成长与牺牲。
+    通过 Murph 解读 Cooper 留下的信息并最终拯救人类，为主线冲突提供令人满足的收束，也验证 Cooper 之前的牺牲与选择。
+    描写年迈的 Murph 与 Cooper 的重逢，形成深刻的情感满足与宣泄，并强化爱、牺牲和跨越时间的家庭纽带等主题。
+    以清晰收束主要故事线作为结尾，为观众留下一个关于人类新未来的有力且充满希望的图景，呼应 Cooper 的勇气、决心与最终胜利。
 
 ## Initial Setup
 {initial_setup}

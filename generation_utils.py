@@ -207,7 +207,7 @@ def preprocess_story_progress_list(story_progress_list):
     """
     
     if story_progress_list == []:
-        return "This is the start of the story."
+        return "这是故事的开端。"
     
     last_story_progress_phrase = "### Latest Story Progress"
     story_progress_list_copy = story_progress_list.copy()

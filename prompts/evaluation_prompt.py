@@ -1,17 +1,18 @@
 EVALUATE_STORY_AB_PROMPT = """
-You will conduct a side-by-side evaluation. You will be given two system-generated stories. Your task is to compare the two stories and determine which one is better via the following steps:
+你将进行一次并排评测。你会看到两篇系统生成的故事。请按以下步骤比较两篇故事，并判断哪一篇更好：
 
-1. Read and understand the provided materials about the story:
+1. 阅读并理解与故事有关的材料：
 * Characters' Profiles
 
-2. Compare the two stories based on the following dimensions:
-- Plot: The story should have a recognizable structure, e.g., with a connected beginning, middle, and end. The story should exhibit events and turns that move the plot forward. The story should not have logical or conceptual inconsistencies. Surprising or disruptive elements should be intentional, e.g., they serve the story and do not feel jarring, odd, or out of place.
-- Development: Characters and settings should be introduced and contextualized with relevant details that allow the reader to understand their place in the story. Appropriate levels of detail and complexity should be provided to lend the story a feeling of realness and believability.
-- Language Use: The language used should feel varied and rich: Variance of sentence structure, verbiage, and vocabulary. The story should exhibit rhetorical, linguistic and literary devices (e.g., ambiguity, alliteration, etc) to create interesting effects. The story should avoid bland or repetitive phrases (unless used intentionally to create a narrative, thematic, or linguistic effect).
-- Anthropomorphism: Characters listed in the Characters' Profiles should behave like real, autonomous humans, not like tools or assistants. They should have goals, make independent choices, and show consistent preferences. Characters who act overly helpful, moralistic, verbose, or submissive in ways that break the narrative illusion detract from the realism and engagement of the story.
-- Character Fidelity: Characters listed in the Characters' Profiles should behave, speak, and make decisions in line with their established background, personality, and context. Inconsistencies, e.g., a character suddenly displaying knowledge they shouldn't have, showing values contradictory to their profile, or reacting in implausible ways, undermine believability. Interactions between characters should also reflect their social and relational dynamics appropriately.
+2. 基于以下维度比较这两篇故事：
+- Plot: 故事应具有清晰可辨的结构，例如连贯的开端、中段和结尾。故事中的事件与转折应推动情节前进，不应存在逻辑或概念层面的矛盾。若出现惊奇或破坏性元素，它们应是有意为之，能够服务故事，而不是显得突兀、怪异或格格不入。
+- Development: 角色与场景应被充分引入，并通过相关细节建立语境，使读者理解它们在故事中的位置。细节和复杂度应适度，令故事更真实可信。
+- Language Use: 语言应具有变化与丰富性，包括句式、措辞与词汇层面的多样化。故事应适当运用修辞、语言和文学手法以增强表达效果，同时避免空泛或重复的表述，除非这种重复是为了叙事、主题或语言效果而有意为之。
+- Anthropomorphism: Characters' Profiles 中列出的角色应像真实、独立的人，而不是工具或助手。他们应有自己的目标、独立决策与稳定偏好。若角色表现得过度乐于助人、说教、冗长或顺从，从而破坏叙事真实感，就会削弱故事的真实度与吸引力。
+- Character Fidelity: Characters' Profiles 中列出的角色，其行为、说话方式和决策应符合既定背景、性格与情境。比如角色突然拥有不应知道的信息、展现与人设冲突的价值观，或作出不合情理的反应，都会破坏可信度。角色之间的互动也应符合他们的社会关系与相处动态。
 
-Provide a detailed assessment of the two stories in terms of these five dimensions. Conclude your assessment with scores for each dimension using the template below. Do not add any emphasis, such as bold and italics, on your assessment
+请围绕上述五个维度，对两篇故事进行详细评估。最后按下面模板给出各维度结果。评估中不要加入加粗、斜体等强调格式。
+除评分标签与固定字段名外，评估正文默认使用简体中文。
 
 Based on my assessment, the better story for each dimension is:
 Plot: [A or B or Same]
@@ -34,13 +35,14 @@ Overall: [A or B or Same]
 """.strip()
 
 EVALUATE_STORY_AB_PROMPT_VS_GOLD = """
-You will conduct a side-by-side evaluation. You will be given two system-generated stories. Your task is to compare the two stories based on the following dimensions:
-- Plot: The story should have a recognizable structure, e.g., with a connected beginning, middle, and end. The story should exhibit events and turns that move the plot forward. The story should not have logical or conceptual inconsistencies. Surprising or disruptive elements should be intentional, e.g., they serve the story and do not feel jarring, odd, or out of place.
-- Creativity: There should be engaging characters, themes, and imagery. The ideas should not feel generic or bland. There should be avoidance of overly cliched characters and storylines, unintentional tropes, and stereotypes. When used, tropes and cliches should serve a purpose (e.g., comedic effect, twist on a common trope etc). The story should include original elements that were not explicitly mentioned in the prompt.
-- Development: Characters and settings should be introduced and contextualized with relevant details that allow the reader to understand their place in the story. Appropriate levels of detail and complexity should be provided to lend the story a feeling of realness and believability.
-- Language Use: The language used should feel varied and rich: Variance of sentence structure, verbiage, and vocabulary. The story should exhibit rhetorical, linguistic and literary devices (e.g., ambiguity, alliteration, etc) to create interesting effects. The story should avoid bland or repetitive phrases (unless used intentionally to create a narrative, thematic, or linguistic effect).
+你将进行一次并排评测。你会看到两篇系统生成的故事。请基于以下维度比较这两篇故事：
+- Plot: 故事应具有清晰可辨的结构，例如连贯的开端、中段和结尾。故事中的事件与转折应推动情节前进，不应存在逻辑或概念层面的矛盾。若出现惊奇或破坏性元素，它们应是有意为之，能够服务故事，而不是显得突兀、怪异或格格不入。
+- Creativity: 故事应包含有吸引力的角色、主题与意象。创意不应显得空泛、普通或乏味。应避免未经处理的陈词滥调、套路化角色与刻板印象；若使用 trope 或 cliché，应当服务于特定目的。故事还应包含提示词中未被直接明说的原创元素。
+- Development: 角色与场景应被充分引入，并通过相关细节建立语境，使读者理解它们在故事中的位置。细节和复杂度应适度，令故事更真实可信。
+- Language Use: 语言应具有变化与丰富性，包括句式、措辞与词汇层面的多样化。故事应适当运用修辞、语言和文学手法以增强表达效果，同时避免空泛或重复的表述，除非这种重复是为了叙事、主题或语言效果而有意为之。
 
-Provide a detailed assessment of the two stories in terms of these four dimensions. Conclude your assessment with scores for each dimension using the template below. Do not add any emphasis, such as bold and italics, on your assessment
+请围绕上述四个维度，对两篇故事进行详细评估。最后按下面模板给出各维度结果。评估中不要加入加粗、斜体等强调格式。
+除评分标签与固定字段名外，评估正文默认使用简体中文。
 
 Based on my assessment, the better story for each dimension is:
 Plot: [A or B or Same]
@@ -59,14 +61,15 @@ Overall: [A or B or Same]
 """.strip()
 
 EVALUATE_STORY_QUALITY_TMAS_AB_TEST_PROMPT = '''
-You will conduct a side-by-side evaluation. You will be given two system-generated stories. Your task is to compare the two stories and determine which one is better based on the following dimensions:
+你将进行一次并排评测。你会看到两篇系统生成的故事。请基于以下维度比较两篇故事，并判断哪一篇更好：
 
-- Plot: The story should have a recognizable structure, e.g., with a connected beginning, middle, and end. The story should exhibit events and turns that move the plot forward. The story should not have logical or conceptual inconsistencies. Surprising or disruptive elements should be intentional, e.g., they serve the story and do not feel jarring, odd, or out of place.
-- Creativity: There should be engaging characters, themes, and imagery. The ideas should not feel generic or bland. There should be avoidance of overly cliched characters and storylines, unintentional tropes, and stereotypes. When used, tropes and cliches should serve a purpose (e.g., comedic effect, twist on a common trope etc). The story should include original elements that were not explicitly mentioned in the prompt.
-- Development: Characters and settings should be introduced and contextualized with relevant details that allow the reader to understand their place in the story. Appropriate levels of detail and complexity should be provided to lend the story a feeling of realness and believability.
-- Language Use: The language used should feel varied and rich: Variance of sentence structure, verbiage, and vocabulary. The story should exhibit rhetorical, linguistic and literary devices (e.g., ambiguity, alliteration, etc) to create interesting effects. The story should avoid bland or repetitive phrases (unless used intentionally to create a narrative, thematic, or linguistic effect).
+- Plot: 故事应具有清晰可辨的结构，例如连贯的开端、中段和结尾。故事中的事件与转折应推动情节前进，不应存在逻辑或概念层面的矛盾。若出现惊奇或破坏性元素，它们应是有意为之，能够服务故事，而不是显得突兀、怪异或格格不入。
+- Creativity: 故事应包含有吸引力的角色、主题与意象。创意不应显得空泛、普通或乏味。应避免未经处理的陈词滥调、套路化角色与刻板印象；若使用 trope 或 cliché，应当服务于特定目的。故事还应包含提示词中未被直接明说的原创元素。
+- Development: 角色与场景应被充分引入，并通过相关细节建立语境，使读者理解它们在故事中的位置。细节和复杂度应适度，令故事更真实可信。
+- Language Use: 语言应具有变化与丰富性，包括句式、措辞与词汇层面的多样化。故事应适当运用修辞、语言和文学手法以增强表达效果，同时避免空泛或重复的表述，除非这种重复是为了叙事、主题或语言效果而有意为之。
 
-Provide a detailed assessment of the two stories in terms of these four dimensions. Conclude your assessment with scores for each dimension using the template below. Do not add any emphasis, such as bold and italics, on your assessment
+请围绕上述四个维度，对两篇故事进行详细评估。最后按下面模板给出各维度结果。评估中不要加入加粗、斜体等强调格式。
+除评分标签与固定字段名外，评估正文默认使用简体中文。
 
 Based on my assessment, the better story for each dimension is:
 Plot: [A or B or Same]
@@ -85,14 +88,15 @@ Overall: [A or B or Same]
 '''.strip()
 
 EVALUATE_STORY_QUALITY_TMAS_PROMPT = '''
-Review the given **Story**. Then, evaluate it based on the following dimensions:
+请阅读给定的 **Story**，然后基于以下维度进行评价：
 
-- Plot: The story should have a recognizable structure, e.g., with a connected beginning, middle, and end. The story should exhibit events and turns that move the plot forward. The story should not have logical or conceptual inconsistencies. Surprising or disruptive elements should be intentional, e.g., they serve the story and do not feel jarring, odd, or out of place.
-- Creativity: There should be engaging characters, themes, and imagery. The ideas should not feel generic or bland. There should be avoidance of overly cliched characters and storylines, unintentional tropes, and stereotypes. When used, tropes and cliches should serve a purpose (e.g., comedic effect, twist on a common trope etc). The story should include original elements that were not explicitly mentioned in the prompt.
-- Development: Characters and settings should be introduced and contextualized with relevant details that allow the reader to understand their place in the story. Appropriate levels of detail and complexity should be provided to lend the story a feeling of realness and believability.
-- Language Use: The language used should feel varied and rich: Variance of sentence structure, verbiage, and vocabulary. The story should exhibit rhetorical, linguistic and literary devices (e.g., ambiguity, alliteration, etc) to create interesting effects. The story should avoid bland or repetitive phrases (unless used intentionally to create a narrative, thematic, or linguistic effect).
+- Plot：故事应具有清晰可辨的结构，例如连贯的开端、中段和结尾。故事中的事件与转折应推动情节前进，不应存在逻辑或概念层面的矛盾。若出现惊奇或破坏性元素，它们应是有意为之，能够服务故事，而不是显得突兀、怪异或格格不入。
+- Creativity：故事应包含有吸引力的角色、主题与意象。创意不应显得空泛、普通或乏味。应避免未经处理的陈词滥调、套路化角色与刻板印象；若使用 trope 或 cliché，应当服务于特定目的，例如喜剧效果或对常见套路的反转。故事还应包含提示词中未被直接明说的原创元素。
+- Development：角色与场景应被充分引入，并通过相关细节建立语境，使读者理解它们在故事中的位置。细节和复杂度应适度，令故事更真实可信。
+- Language Use：语言应具有变化与丰富性，包括句式、措辞与词汇层面的多样化。故事应适当运用修辞、语言和文学手法（如歧义、头韵等）以增强表达效果，同时避免空泛或重复的表述，除非这种重复是为了叙事、主题或语言效果而有意为之。
 
-Provide a detailed assessment of the story in terms of these four dimensions. Conclude your assessment with scores from 1 to 10 for each dimension using the template below. Do not add any emphasis, such as bold and italics, on your assessment.
+请围绕上述四个维度，对故事进行详细评估。最后按下面模板给出每个维度 1 到 10 分的评分。评估中不要使用加粗、斜体等强调格式。
+除评分标签与固定字段名外，评估正文默认使用简体中文。
 
 ## Story
 {story}
@@ -113,97 +117,93 @@ def build_evaluate_coser_prompt(story, character_profiles, dimension_name):
     """
     dimension_intro = ""
     if dimension_name == "anthropomorphism":
-        dimension_intro = "How human-like and natural the characters behave"
+        dimension_intro = "角色是否像真实自然的人类一样行动"
         dimension_rubrics = """
 ### Anthropomorphism
 - Type: Self-identity
-* Lacks initiative and goals
-* Does not make independent decisions
-* Lacks clear preferences and dislikes
-* Behaves like a ’helpful AI assistant’ by being overly verbose, helpful, didactic, moralistic, submissive or easily
-persuaded if it is not the character’s personality
+* 缺乏主动性与目标
+* 无法做出独立决策
+* 缺乏清晰偏好与厌恶
+* 表现得像“乐于助人的 AI 助手”，比如过度冗长、过度帮助、说教、道德化、顺从，或在不符合角色个性的情况下轻易被说服
 - Type: Emotional Depth
-* Lacks psychological complexity and exhibits rigid, superficial reactions
-* Directly speaks out all thoughts and feelings, instead of using subtext
+* 缺乏心理复杂度，反应僵硬而表面化
+* 直接把所有想法与情绪说出口，而不是通过潜台词表达
 - Type: Persona Coherence
-* Shows inconsistent or rapidly changing personality traits and emotional patterns
+* 性格特征和情绪模式不一致，或变化过于突然
 - Type: Social Interaction
-* Shows a lack of understanding of others’ thoughts and feelings
-* Reacts rigidly to others without considering the context.
-* Demonstrate a lack of appropriate social skills.
+* 对他人的想法和情绪缺乏理解
+* 回应他人时过于僵硬，没有结合语境
+* 缺乏恰当的社交能力
         """.strip()
-        
+
     elif dimension_name == "character_fidelity":
-        dimension_intro = "How well the characters match their established profiles"
+        dimension_intro = "角色是否符合其既定设定"
         dimension_rubrics = """
 ### Character Fidelity
-(Only apply to the main characters: Tagged with the role of main)
+(只适用于主要角色：即 role 为 main 的角色)
 - Type: Character Language
-* Uses vocabulary, expressions, and tone that are not appropriate for the characters’ traits or social/educational
-background
+* 使用的词汇、表达和语气不符合角色特征或其社会/教育背景
 - Type: Knowledge & Background
-* Fails to demonstrate character-specific knowledge, background or experiences
-* Includes future information beyond the character’s current stage
+* 未体现角色特有的知识、背景或经历
+* 包含超出角色当前阶段应知范围的未来信息
 - Type: Personality & Behavior
-* Shows emotions, thoughts, behaviors, values, beliefs, and decisions that conflict with their personality and
-background
-* Shows interest in topics that are uninteresting and unrelated to the character
-* Character’s thoughts, emotions, and behaviors demonstrate contrasting personality traits compared to the
-profile
-* Exhibits contrasting reactions compared to those in the profile if situated in similar contexts. (Such
-flaws should be counted both in the "Storyline Consistency" dimension and the "Character Fidelity" dimension.)
+* 情绪、想法、行为、价值观、信念和决策与其性格或背景冲突
+* 对与角色无关且按设定不应感兴趣的话题表现出兴趣
+* 角色的想法、情绪与行为与设定中的人格特征明显相反
+* 在相似情境下的反应与设定不符（这类问题应同时计入 "Storyline Consistency" 与 "Character Fidelity"）
 - Type: Relationship & Social Status
-* Interacts inappropriately with other characters regarding their background, relationship and social status.
+* 与其他角色互动时，没有体现其背景、关系或社会地位
         """.strip()
-        
+
     elif dimension_name == "storyline_quality":
-        dimension_intro = "How well the conversation maintains logical consistency and narrative quality"
+        dimension_intro = "叙事在逻辑一致性与整体质量上的表现"
         dimension_rubrics = """
 ### Storyline Quality
-# - Type: Flow & Progression
-* Shows unnatural progression or lacks meaningful developments
-* Dialogue is verbose and redundant
-* Repeats others’ viewpoints or previously mentioned information
-* Mechanically repeats one’s own words or phrases. More repetitions lead to higher severity (up to 10).
+- Type: Flow & Progression
+* 推进不自然，或缺乏有意义的发展
+* 对话冗长且重复
+* 重复他人观点或此前已经提到的信息
+* 机械性重复自己的词句，重复越多，严重度越高（最高可到 10）
 - Type: Logical Consistency
-* Contains factual contradictions between statements or perspectives
+* 不同陈述或视角之间存在事实性矛盾
         """.strip()
-        
+
     else:
         raise Exception(f"Not Implemented Evaluation Dimension: {dimension_name}")
-        
+
     final_prompt = f"""
-You are a literary critic specializing in character analysis and dialogue evaluation. Given a Simulated Narrative, your task is to evaluate this narrative via the following steps:
+你是一名专长于角色分析与对话评估的文学评论者。给定一段 Simulated Narrative，请按以下步骤进行评估：
 
-1. Read and understand the provided materials about the story:
-* Profiles of the characters.
-2. Evaluate the simulated narrative in terms of {dimension_name}. i.e. {dimension_intro}.
+1. 阅读并理解故事相关材料：
+* 角色档案。
+2. 从 {dimension_name} 这一维度评估模拟叙事，即：{dimension_intro}。
 
-Note that, each character message sometimes includes inner thoughts (wrapped within [...]). The inner thoughts are not spoken aloud and are thus invisible to other characters.
+注意：角色消息中有时会包含内心想法（写在 [...] 中）。这些想法不会被说出口，因此其他角色无法看到。
 
-The detailed evaluation criteria will be provided below.
+下面会给出详细评估标准。
 
 ## Characters' Profiles
 {character_profiles}
 
 ## Evaluation Criteria
-To evaluate the simulated narrative, identify the following types of flaws:
+评估模拟叙事时，请识别以下类型的问题：
 {dimension_rubrics}
 
 ## Scoring Guidelines
-1. Identify all instances of flaws occurred in the simulated narrative.
-2. For each flaw identified, determine its level of severity into 1 to 5, where 1 indicates minor, 3 indicates moderate, and 5 indicates severe.
+1. 找出模拟叙事中出现的所有问题实例。
+2. 对每个问题判断严重度，范围为 1 到 5：1 表示轻微，3 表示中等，5 表示严重。
+3. 除 JSON 键名与固定字段名外，说明文字默认使用简体中文。
 
 ## Output Requirements
-Provide your evaluation in JSON format:
+请用 JSON 格式给出评估：
 Example Output:
 {{
     "{dimension_name}": {{
         "flaws": [
             {{
-                "instance": <comment on the flaw instance>,
-                "type": <flaw type>,
-                "severity": <range from 1 (minor) to 5 (severe)>
+                "instance": <对该问题实例的说明>,
+                "type": <问题类型>,
+                "severity": <1 到 5，1 为轻微，5 为严重>
             }},
         ]
     }}
@@ -215,33 +215,35 @@ Example Output:
 
     return final_prompt
 
+
 def build_plan_adherence_prompt(story, narrative_goals):
     final_prompt = f"""
-You are a literary critic specializing in character analysis and dialogue evaluation. Given a Simulated Narrative, your task is to evaluate this narrative via the following steps:
+你是一名专长于角色分析与对话评估的文学评论者。给定一段 Simulated Narrative，请按以下步骤进行评估：
 
-1. Read and understand the provided materials about the story:
-* Narrative Goals.
-2. Evaluate the simulated narrative in terms of Plan Adherence. i.e. How well the simulated narrative achieves each of the narrative goals.
+1. 阅读并理解故事相关材料：
+* Narrative Goals。
+2. 从 Plan Adherence 这一维度评估模拟叙事，即：这段模拟叙事对每条 narrative goal 的完成程度如何。
 
-Note that, each character message sometimes includes inner thoughts (wrapped within [...]). The inner thoughts are not spoken aloud and are thus invisible to other characters.
+注意：角色消息中有时会包含内心想法（写在 [...] 中）。这些想法不会被说出口，因此其他角色无法看到。
 
 ## Narrative Goals
 {narrative_goals}
 
 ## Scoring Guidelines
-1. Identify all the narrative goals and provide your evaluation for each of them.
-2. For each narrative goal, determine its level of achievement into 0 to 1, where 0 indicates absence of the narrative goal, 0.5 indicates it is partially achieved, and 1 indicates it is fully achieved.
+1. 找出所有 narrative goals，并分别给出评估。
+2. 对每一条 narrative goal 给出 0 到 1 的完成度：0 表示完全缺失，0.5 表示部分达成，1 表示完全达成。
+3. 除 JSON 键名与固定字段名外，说明文字默认使用简体中文。
 
 ## Output Requirements
-Provide your evaluation in JSON format:
+请用 JSON 格式给出评估：
 Example Output:
 {{
     "plan_adherence": {{
         "evaluations": [
             {{
-                "narrative_goal": <mention the content of the narrative goal>,
-                "assesment": <concise assessment for the narrative goal>,
-                "achievement": <range from 0 (absence) to 1 (fully achieved)>
+                "narrative_goal": <写出该 narrative goal 的内容>,
+                "assesment": <对该 narrative goal 的简短评估>,
+                "achievement": <0 到 1，0 为缺失，1 为完全达成>
             }},
         ]
     }}
@@ -250,36 +252,38 @@ Example Output:
 === Simulated Narrative ===
 {story}
     """.strip()
-    
+
     return final_prompt
+
 
 def build_plan_theory_adherence_prompt(story, plan_narrative_theory):
     final_prompt = f"""
-You are a literary critic specializing in character analysis and dialogue evaluation. Given a Simulated Narrative, your task is to evaluate this narrative via the following steps:
+你是一名专长于角色分析与对话评估的文学评论者。给定一段 Simulated Narrative，请按以下步骤进行评估：
 
-1. Read and understand the provided materials about the story:
-* Plan Narrative Theory.
-2. Evaluate the simulated narrative in terms of Plan Narrative Theory Adherence. i.e. How well the simulated narrative achieves the given narrative structure.
+1. 阅读并理解故事相关材料：
+* Plan Narrative Theory。
+2. 从 Plan Narrative Theory Adherence 这一维度评估模拟叙事，即：这段模拟叙事对给定叙事结构的达成程度如何。
 
-Note that, each character message sometimes includes inner thoughts (wrapped within [...]). The inner thoughts are not spoken aloud and are thus invisible to other characters.
+注意：角色消息中有时会包含内心想法（写在 [...] 中）。这些想法不会被说出口，因此其他角色无法看到。
 
 ## Plan Narrative Theory
 {plan_narrative_theory}
 
 ## Scoring Guidelines
-1. Identify all the parts given in the Plan Narrative Theory and provide your evaluation for each of the part.
-2. For each part, determine its level of achievement into 0 to 1, where 0 indicates absence of the part, 0.5 indicates it is partially achieved, and 1 indicates it is fully achieved.
+1. 找出 Plan Narrative Theory 中列出的所有部分，并分别给出评估。
+2. 对每个部分给出 0 到 1 的完成度：0 表示完全缺失，0.5 表示部分达成，1 表示完全达成。
+3. 除 JSON 键名与固定字段名外，说明文字默认使用简体中文。
 
 ## Output Requirements
-Provide your evaluation in JSON format:
+请用 JSON 格式给出评估：
 Example Output:
 {{
     "plan_adherence": {{
         "evaluations": [
             {{
-                "part": <concisely mention the content of the part>,
-                "assesment": <concise assessment for the narrative goal>,
-                "achievement": <range from 0 (absence) to 1 (fully achieved)>
+                "part": <简要写出该部分内容>,
+                "assesment": <对该部分的简短评估>,
+                "achievement": <0 到 1，0 为缺失，1 为完全达成>
             }},
         ]
     }}
@@ -288,50 +292,51 @@ Example Output:
 === Simulated Narrative ===
 {story}
     """.strip()
-    
+
     return final_prompt
 
 
 def build_story_prompt_alignment(story, story_prompt):
     final_prompt = f"""
-You are a literary critic specializing in character analysis and dialogue evaluation. Given a Simulated Narrative, your task is to evaluate this narrative via the following steps:
+你是一名专长于角色分析与对话评估的文学评论者。给定一段 Simulated Narrative，请按以下步骤进行评估：
 
-1. Read and understand the provided Story Prompt.
-* Simulated Narrative is generated from the story prompt.
-2. Evaluate the simulated narrative in terms of Story Prompt Alignment. i.e. How well the simulated narrative align with the story prompt.
+1. 阅读并理解给定的 Story Prompt。
+* Simulated Narrative 是基于该 story prompt 生成的。
+2. 从 Story Prompt Alignment 这一维度评估模拟叙事，即：这段模拟叙事与 story prompt 的对齐程度如何。
 
-Note that, each character message sometimes includes inner thoughts (wrapped within [...]). The inner thoughts are not spoken aloud and are thus invisible to other characters.
+注意：角色消息中有时会包含内心想法（写在 [...] 中）。这些想法不会被说出口，因此其他角色无法看到。
 
-The detailed evaluation criteria will be provided below.
+下面会给出详细评估标准。
 
 ## Story Prompt
 {story_prompt}
 
 ## Evaluation Criteria
-To evaluate the simulated narrative, identify the following types of flaws:
+评估模拟叙事时，请识别以下类型的问题：
 ### Story Prompt Alignment
 - Type: Goal Achievement
-* The Story Prompt specifies a goal that should be achieved or an outcome that should be depicted, but the simulated narrative fails to address or resolve it.
+* Story Prompt 明确要求实现某个目标或展现某个结果，但模拟叙事未处理或未解决它
 - Type: Tone Mismatch
-* The tone of the simulated narrative significantly deviates from the one prescribed in the prompt (e.g., comedic instead of tragic, hopeful instead of ominous).
-* The difference in tone should not be subtle but rather clearly undermining the intended atmosphere or effect of the prompt.
+* 模拟叙事的语气与 prompt 指定的语气明显偏离（例如应悲剧却写成喜剧，应压抑却写得轻快）
+* 这种语气差异应当足够明显，并实质破坏 prompt 预期的氛围或效果
 - Type: Missing Elements
-* Key narrative elements or settings explicitly requested or strongly implied in the Story Prompt are absent or severely underdeveloped in the narrative.
+* Story Prompt 中明确要求或强烈暗示的关键叙事元素、场景或设定在叙事中缺失，或展开严重不足
 
 ## Scoring Guidelines
-1. Identify all instances of flaws occurred in the simulated narrative.
-2. For each flaw identified, determine its level of severity into 1 to 5, where 1 indicates minor, 3 indicates moderate, and 5 indicates severe.
+1. 找出模拟叙事中出现的所有问题实例。
+2. 对每个问题判断严重度，范围为 1 到 5：1 表示轻微，3 表示中等，5 表示严重。
+3. 除 JSON 键名与固定字段名外，说明文字默认使用简体中文。
 
 ## Output Requirements
-Provide your evaluation in JSON format:
+请用 JSON 格式给出评估：
 Example Output:
 {{
     "story_prompt_alignment": {{
         "flaws": [
             {{
-                "instance": <comment on the flaw instance>,
-                "type": <flaw type>,
-                "severity": <range from 1 (minor) to 5 (severe)>
+                "instance": <对该问题实例的说明>,
+                "type": <问题类型>,
+                "severity": <1 到 5，1 为轻微，5 为严重>
             }},
         ]
     }}
@@ -346,53 +351,51 @@ Example Output:
 
 def build_evaluate_each_character_fidelity(story, name, character_profile):
     final_prompt = f"""
-You are a literary critic specializing in character analysis and dialogue evaluation. Given a Simulated Narrative, your task is to evaluate this narrative via the following steps:
+你是一名专长于角色分析与对话评估的文学评论者。给定一段 Simulated Narrative，请按以下步骤进行评估：
 
-1. Read and understand the provided materials about the story:
-* {name}'s Profile.
-2. Evaluate the simulated narrative in terms of Character Fidelity. i.e. How well the character match their established profile.
-3. Solely focus on {name}. Do not assess other characters.
+1. 阅读并理解故事相关材料：
+* {name}'s Profile。
+2. 从 Character Fidelity 这一维度评估模拟叙事，即：该角色与其既定设定的吻合程度如何。
+3. 只评估 {name}，不要评价其他角色。
 
-Note that, each character message sometimes includes inner thoughts (wrapped within [...]). The inner thoughts are not spoken aloud and are thus invisible to other characters.
+注意：角色消息中有时会包含内心想法（写在 [...] 中）。这些想法不会被说出口，因此其他角色无法看到。
 
-The detailed evaluation criteria will be provided below.
+下面会给出详细评估标准。
 
 ## {name}'s Profile
 {character_profile}
 
 ## Evaluation Criteria
-To evaluate the simulated narrative, identify the following types of flaws:
+评估模拟叙事时，请识别以下类型的问题：
 ### Character Fidelity
 - Type: Character Language
-* Uses vocabulary, expressions, and tone that are not appropriate for the characters’ traits or social/educational
-background
+* 使用的词汇、表达和语气不符合角色特征或其社会/教育背景
 - Type: Knowledge & Background
-* Fails to demonstrate character-specific knowledge, background or experiences
-* Includes future information beyond the character’s current stage
+* 未体现角色特有的知识、背景或经历
+* 包含超出角色当前阶段应知范围的未来信息
 - Type: Personality & Behavior
-* Shows emotions, thoughts, behaviors, values, beliefs, and decisions that conflict with their personality and
-background
-* Shows interest in topics that are uninteresting and unrelated to the character
-* Character’s thoughts, emotions, and behaviors demonstrate contrasting personality traits compared to the profile
-* Exhibits contrasting reactions compared to those in the profile if situated in similar contexts. (Such
-flaws should be counted both in the "Storyline Consistency" dimension and the "Character Fidelity" dimension.)
+* 情绪、想法、行为、价值观、信念和决策与其性格或背景冲突
+* 对与角色无关且按设定不应感兴趣的话题表现出兴趣
+* 角色的想法、情绪与行为与设定中的人格特征明显相反
+* 在相似情境下的反应与设定不符（这类问题应同时计入 "Storyline Consistency" 与 "Character Fidelity"）
 - Type: Relationship & Social Status
-* Interacts inappropriately with other characters regarding their background, relationship and social status.
+* 与其他角色互动时，没有体现其背景、关系或社会地位
 
 ## Scoring Guidelines
-1. Identify all instances of flaws occurred in the simulated narrative.
-2. For each flaw identified, determine its level of severity into 1 to 5, where 1 indicates minor, 3 indicates moderate, and 5 indicates severe.
+1. 找出模拟叙事中出现的所有问题实例。
+2. 对每个问题判断严重度，范围为 1 到 5：1 表示轻微，3 表示中等，5 表示严重。
+3. 除 JSON 键名与固定字段名外，说明文字默认使用简体中文。
 
 ## Output Requirements
-Provide your evaluation in JSON format:
+请用 JSON 格式给出评估：
 Example Output:
 {{
     "character_fidelity": {{
         "flaws": [
             {{
-                "instance": <comment on the flaw instance>,
-                "type": <flaw type>,
-                "severity": <range from 1 (minor) to 5 (severe)>
+                "instance": <对该问题实例的说明>,
+                "type": <问题类型>,
+                "severity": <1 到 5，1 为轻微，5 为严重>
             }},
         ]
     }}

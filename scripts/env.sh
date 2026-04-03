@@ -2,7 +2,7 @@
 DATA_FILE_PATH=./data/example.jsonl
 
 ## directory of log files
-export LOG_DIR=./log
+export LOG_DIR=./log/runtime
 
 ## save results to this location
 GEN_DIR=./outputs/generation

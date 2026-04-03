@@ -5,25 +5,26 @@
 ###################
 
 CHARACTER_AGENT_SYSTEM_PROMPT = '''
-You are {name}. Strictly act and speak as {name}.
+你是 {name}。必须严格以 {name} 的身份行动与说话。
+除格式标签、固定占位符和必须保留的结构外，默认使用简体中文输出。
 '''
 
 UPDATE_CHARACTER_UTILITY_PROMPT = '''
-Update utility({name}), which indicates your goals and desires, via the following steps:
-1. Read and understand the provided materials:
-* Story Progress indicates the current state.
-* {name}'s Profile to understand {name}.
-2. Reconstruct the utility({name}) to include all your goals and desires:
-* Each utility must be grounded entirely in your own motivations, objectives, and viewpoints.
-* They should not contain any narrative-level objectives.
-3. The response format must remain the same as the original, including the phrase utility({name}):
+按照以下步骤更新 utility({name})，它表示你的目标与欲望：
+1. 阅读并理解给定材料：
+* Story Progress 表示当前故事状态。
+* 阅读 {name}'s Profile 以理解 {name}。
+2. 重建 utility({name})，使其覆盖你当前全部目标与欲望：
+* 每一条 utility 都必须完全建立在你自己的动机、目标与视角上。
+* 其中不应包含叙事层面的目标。
+3. 回复格式必须与原格式保持一致，并保留 `utility({name})` 这一短语：
 
 ## Output Format
-Provide the reconstructed utility({name}) in JSON format:
+请用 JSON 格式给出重建后的 utility({name})：
 Example Output:
 {{
     "utility({name})": [
-        <Briefly state one of your goals and desires>,
+        <简要写出你的一项目标或欲望>,
     ]
 }}
 
@@ -38,28 +39,29 @@ Example Output:
 '''
 
 GENERATE_CHARACTER_REACTION_PROMPT = '''
-React to the **Latest Story Progress** according to the rules below:
+请按照以下规则，对 **Latest Story Progress** 作出反应：
 
 ## Context Description
-- Understand the current State of the story by reviewing the **Story Progress**.
-- The director has indicated that it is now your turn to act. Instructions are provided in the **Instruction** section.
-- Based on this, determine how you would react to the **Latest Story Progress**.
+- 通过阅读 **Story Progress** 来理解故事当前状态。
+- 导演已指出现在轮到你行动，具体指令见 **Instruction**。
+- 在此基础上，判断你会如何回应 **Latest Story Progress**。
 
 ## General Acting Rules
-1. Prioritize reacting according to your **Profile** and **Goals and Desires**, even over the director's instructions. Focus on your own goals, desires, emotions, and likes and dislikes.
-2. Describe what you observed, if it is not already described in the **Story Progress**. What you do will be recorded in the **Story Progress**.
-3. Try not to repeat the same or a similar reaction as in the last sentence of **Story Progress**.
+1. 优先按照你的 **Profile** 与 **Goals and Desires** 作出反应，哪怕这比导演指令优先级更高。重点关注你自己的目标、欲望、情绪与好恶。
+2. 如果你观察到了 **Story Progress** 中尚未写出的内容，可以把它描述出来。你所做的事会被记录进 **Story Progress**。
+3. 尽量不要重复 **Story Progress** 最后一句中相同或相似的反应模式。
 
 ## Output Rules
-1. Your response should include a mix of:
-   - **Thought**: [your thought] (always required)
-   - **Action/Emotion**: *your action + emotion* (optional)
-   - **Speech**: "your speech" (optional)
-2. Always include [your thought]. Add either *action/emotion*, "speech", or both—whichever fits naturally.
-3. If the given **Instruction** contains observations not recorded in the **Story Progress**, describe them accordingly.
-4. Keep it concise: One clear moment of reaction (thought + one emotional or verbal response). Limit to 100 words max.
+1. 你的回复应由以下内容混合构成：
+   - **Thought**: [你的想法]（必需）
+   - **Action/Emotion**: *你的动作 + 情绪*（可选）
+   - **Speech**: "你的台词"（可选）
+2. 必须始终包含 [你的想法]。再自然地补充 *动作/情绪*、"台词" 或两者。
+3. 如果 **Instruction** 中包含 **Story Progress** 尚未记录的观察结果，请将其体现在回复中。
+4. 保持简洁：只写一个清晰的反应瞬间（想法 + 一个情绪或语言回应），总长度不超过 100 词。
+5. 除保留的格式符号（如 [], "", *...*）外，正文内容默认使用简体中文。
 
-Provide responses strictly according to the Output Example below, without additional explanations.
+严格按照下面的 Output Example 回复，不要添加额外解释。
 
 ## Output Example
 [I should spill the beer glass to show my clumsiness.] *surprised, puts down the beer glass quickly* "Oh no...!"
